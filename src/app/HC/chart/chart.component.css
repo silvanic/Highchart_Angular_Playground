@@ -1,0 +1,5 @@
+.flex {
+  overflow: auto;
+  white-space: nowrap;
+  display: flex;
+}

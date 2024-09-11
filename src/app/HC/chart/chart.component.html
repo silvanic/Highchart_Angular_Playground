@@ -1,0 +1,76 @@
+<div>
+  <highcharts-chart
+    id="chart"
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    style="width: 100%; height: 400px; display: block">
+  </highcharts-chart>
+</div>
+
+<form [formGroup]="formSeries" (ngSubmit)="addSeries()">
+  <div>
+    <label for="seriesName">Series Name</label>
+    <input
+      id="seriesName"
+      formControlName="seriesName"
+      name="seriesName"
+      required />
+  </div>
+
+  <div>
+    <label for="seriesType">Series Type</label>
+    <select
+      id="seriesType"
+      formControlName="seriesType"
+      name="seriesType"
+      required>
+      <option value="line">Line</option>
+      <option value="column">Column</option>
+      <option value="bar">Bar</option>
+      <option value="spline">Spline</option>
+      <option value="area">Area</option>
+      <!-- Ajoute d'autres types si nécessaire -->
+    </select>
+  </div>
+
+  <div>
+    <label for="seriesData">Series Data (comma-separated)</label>
+    <input
+      id="seriesData"
+      formControlName="seriesData"
+      name="seriesData"
+      (keypress)="onSeriesDataKeyUp($event)"
+      required />
+  </div>
+
+  <button [disabled]="!formSeries.valid" type="submit">Add Series</button>
+</form>
+
+<div class="flex">
+  @for (item of chartOptions.series; track item.name; let i = $index) {
+    <ul style="border: black solid 1px">
+      {{
+        'Name : ' + item.name + ' ( ' + (item.type | uppercase) + ' )'
+      }}
+      <ul>
+        <li>
+          <input
+            id="element"
+            type="number"
+            [(ngModel)]="element"
+            name="element"
+            required />
+          <button [disabled]="!isNumber(element)" (click)="addElement(i)">
+            Add
+          </button>
+        </li>
+        @for (data of getData(item); track $index; let j = $index) {
+          <li>
+            {{ j + ' : ' + data }}
+            <button (click)="deleteElement(i, j)">DELETE</button>
+          </li>
+        }
+      </ul>
+    </ul>
+  }
+</div>

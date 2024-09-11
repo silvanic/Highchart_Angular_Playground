@@ -1,0 +1,17 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div class="canvas-container">
+  <div class="canvas" #canvasElement (click)="addNoteBox($event)">
+    <div
+      *ngFor="let note of notes()"
+      class="note-box"
+      [style.left.px]="note.position.x"
+      [style.top.px]="note.position.y"
+      (mousedown)="startDragging(note, $event)">
+      <textarea
+        [(ngModel)]="note.content"
+        (resize)="onResize($event)"
+        placeholder="Write your note here..."></textarea>
+    </div>
+  </div>
+</div>

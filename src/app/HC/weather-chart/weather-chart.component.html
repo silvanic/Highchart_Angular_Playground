@@ -1,0 +1,45 @@
+<highcharts-chart
+  [Highcharts]="Highcharts"
+  [callbackFunction]="chartCallback"
+  [options]="chartOptions"
+  style="display: block; width: 100%; height: 600px"></highcharts-chart>
+
+<button (click)="reloadChart()">Recharger</button>
+<button (click)="handleChangePoint()">
+  {{ positionPoint() === 'h' ? 'Horizon' : 'Vertical' }}
+</button>
+<button (click)="handleChangeSeriesType()">
+  {{ seriesType() }}
+</button>
+<fieldset>
+  <legend>Zone de travail activé</legend>
+  <div>
+    <input
+      id="zone"
+      type="radio"
+      name="drone"
+      value="zone"
+      [(ngModel)]="zoneTravailActive" />
+    <label for="zone">Zone de travail</label>
+  </div>
+
+  <div>
+    <input
+      id="select"
+      type="radio"
+      name="drone"
+      value="select"
+      [(ngModel)]="zoneTravailActive" />
+    <label for="select">Selectionné(s)</label>
+  </div>
+
+  <div>
+    <input
+      type="radio"
+      id="index"
+      name="drone"
+      value="index"
+      [(ngModel)]="zoneTravailActive" />
+    <label for="index">Par index</label>
+  </div>
+</fieldset>
