@@ -29,9 +29,20 @@ export class WeatherChartComponent implements AfterViewInit {
   // partie pour la gestion de la zone de Travail
   zoneTravailOption: Highcharts.AxisPlotBandsOptions = {
     id: 'zoneTravail',
-    from: 25,
-    to: 30,
-    color: 'dark',
+    from: 50,
+    to: 65,
+    color: '#48221e',
+    label: {
+      text: 'Zone de travail',
+      align: 'center',
+      y: +25,
+      style: {
+        color: 'white',
+        fontSize: '18px',
+        fontFamily: 'Verdana',
+        textTransform: 'uppercase',
+      },
+    },
   };
   zoneTravailActive = 'index';
   pointDragStart: number | null = null;
@@ -259,29 +270,44 @@ export class WeatherChartComponent implements AfterViewInit {
           },
           drag: (event: any) => {
             if (this.zoneTravailActive === 'zone' && this.pointDragStart) {
-              const time = setTimeout(() => {
-                const xVariation =
-                  event.newPoint?.x - (this.pointDragStart ?? 0);
-                for (let i = 0; i < this.chartRef.series.length; i++) {
-                  const element = this.chartRef.series[i];
-                  const newData = element.data.map((point, index) => {
+              const xVariation = event.newPoint?.x - (this.pointDragStart ?? 0);
+              for (let i = 0; i < this.chartRef.series.length; i++) {
+                const element = this.chartRef.series[i];
+                if (this.zoneTravailOption.from && this.zoneTravailOption.to) {
+                  for (
+                    let j = this.zoneTravailOption.from || 0;
+                    j < this.zoneTravailOption.to || 0;
+                    j++
+                  ) {
+                    const point = element.data[j];
                     if (
-                      this.zoneTravailOption.from &&
-                      this.zoneTravailOption.to &&
                       point.x + xVariation > this.zoneTravailOption.from &&
                       point.x + xVariation < this.zoneTravailOption.to &&
-                      point.x + xVariation > element.data[index - 1].x &&
-                      point.x + xVariation < element.data[index + 1].x
+                      point.x + xVariation > element.data[j - 1].x &&
+                      point.x + xVariation < element.data[j + 1].x
                     ) {
-                      return [point.index + xVariation, point.y];
-                    } else {
-                      return [point.index, point.y];
+                      element.points[j].x = point.index + xVariation;
+                      element.points[j].y = point.y;
                     }
-                  });
-                  element.setData(newData, true, false);
+                  }
                 }
-                clearTimeout(time);
-              }, 500);
+                // METHODE NON OPTI
+                // const newData = element.data.map((point, index) => {
+                //   if (
+                //     this.zoneTravailOption.from &&
+                //     this.zoneTravailOption.to &&
+                //     point.x + xVariation > this.zoneTravailOption.from &&
+                //     point.x + xVariation < this.zoneTravailOption.to &&
+                //     point.x + xVariation > element.data[index - 1].x &&
+                //     point.x + xVariation < element.data[index + 1].x
+                //   ) {
+                //     return [point.index + xVariation, point.y];
+                //   } else {
+                //     return [point.index, point.y];
+                //   }
+                // });
+                // element.setData(newData, true, false);
+              }
             }
 
             if (this.zoneTravailActive === 'index') {
